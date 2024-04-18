@@ -1,0 +1,20 @@
+---
+spring:
+  application:
+    name: service-registry
+
+server:
+  port: ${SERVER_PORT:8761}
+
+eureka:
+  environment: ${EUREKA_ENVIRONMENT}
+  client:
+    # Don't register itself with the Service Registry.
+    # This application acts as a Eureka server and not a Eureka client.
+    register-with-eureka: false
+
+    # Don't fetch the location of registered microservices (Service Registry) from anywhere.
+    # This application creates and maintains the Service Registry itself.
+    fetch-registry: false
+  instance:
+    hostname: service-registry
