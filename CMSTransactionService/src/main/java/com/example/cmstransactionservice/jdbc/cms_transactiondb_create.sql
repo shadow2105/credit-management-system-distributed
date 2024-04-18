@@ -1,0 +1,4 @@
+create table credit_accounts (credit_limit decimal(38,2) not null, current_balance decimal(38,2) not null, created_at datetime(6), updated_at datetime(6), id BINARY(16) not null, account_number varchar(255) not null, created_by varchar(255), customer_id varchar(255) not null, updated_by varchar(255), primary key (id)) engine=InnoDB;
+create table transactions (amount decimal(38,2) not null, closing_balance decimal(38,2) not null, type char(1) not null, post_datetime datetime(6) not null, transaction_datetime datetime(6) not null, credit_account_id BINARY(16), transaction_id binary(16) not null, description varchar(255) not null, primary key (transaction_id)) engine=InnoDB;
+alter table credit_accounts add constraint UK_g3p17blxd4kitkbln7ghg6dii unique (account_number);
+alter table transactions add constraint FK90008g4qpovdymgntet75mpdb foreign key (credit_account_id) references credit_accounts (id);
