@@ -1,0 +1,17 @@
+{
+  "name": "cms-transaction-connector-source",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "database.server.id": 3,
+    "database.hostname": "host.docker.internal",
+    "database.port": "3306",
+    "database.user": "******",
+    "database.password": "******",
+    "database.include.list": "cms_transaction_dev",
+    "table.include.list": "cms_transaction_dev.transactions",
+    "topic.prefix": "cms-transaction-service",
+    "skipped.operations": "t, d",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka-broker1:29092, kafka-broker2:29093",
+    "schema.history.internal.kafka.topic": "cms-cdc-data"
+  }
+}

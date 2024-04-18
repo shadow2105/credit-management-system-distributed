@@ -1,0 +1,17 @@
+{
+  "name": "cms-transaction-account-connector-source",
+  "config": {
+    "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+    "database.server.id": 2,
+    "database.hostname": "host.docker.internal",
+    "database.port": "3306",
+    "database.user": "******",
+    "database.password": "******",
+    "database.include.list": "cms_transaction_dev",
+    "table.include.list": "cms_transaction_dev.credit_accounts",
+    "column.include.list": "cms_transaction_dev.credit_accounts.current_balance, cms_transaction_dev.credit_accounts.updated_at, cms_transaction_dev.credit_accounts.id, cms_transaction_dev.credit_accounts.updated_by",
+    "topic.prefix": "cms-transaction-service",
+    "schema.history.internal.kafka.bootstrap.servers": "kafka-broker1:29092, kafka-broker2:29093",
+    "schema.history.internal.kafka.topic": "cms-cdc-data"
+  }
+}
