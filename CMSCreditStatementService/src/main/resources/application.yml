@@ -1,0 +1,183 @@
+---
+spring:
+  application:
+    name: cms-credit-statement-service
+  profiles:
+    active:
+      - ${PROFILE}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COM_ISSUER_URI}
+          # jwk-set-uri is retrieved from {issuer-uri}/.well-known/openid-configuration if not specified explicitly
+          #jwk-set-uri: http://localhost:8090/oauth2/jwks
+  kafka:
+    consumer:
+      # https://stackoverflow.com/questions/44371012/containerized-kafka-client-errors-when-producing-messages-to-the-host-kafka-serv
+      # https://stackoverflow.com/questions/51630260/connect-to-kafka-running-in-docker
+      bootstrap-servers: ${KAFKA_CONSUMER_BOOTSTRAP_SERVERS}
+      group-id: ${KAFKA_CONSUMER_GROUP_ID}
+
+com:
+  kafka:
+    consumer:
+      topic: ${COM_KAFKA_CONSUMER_TOPIC}
+
+server:
+  port: ${SERVER_PORT:8082}
+
+logging:
+  file:
+    path: ${LOGGING_FILE_PATH}
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+  instance:
+    hostname: cms-credit-statement-service
+    prefer-ip-address: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+
+  datasource:
+    url: 'jdbc:h2:mem:cmsstatementdb'
+
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+  sql:
+    init:
+      platform: h2
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+#      apache:
+#        kafka: TRACE
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  h2:
+    console:
+      enabled: false
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM}
+    database: ${SPRING_JPA_DATABASE}
+    show-sql: true
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: cms_statementdb_create.sql
+
+  sql:
+    init:
+      platform: ${SPRING_JPA_DATABASE}
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+#      apache:
+#        kafka: DEBUG
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  h2:
+    console:
+      enabled: false
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM}
+    database: ${SPRING_JPA_DATABASE}
+    show-sql: false
+
+  sql:
+    init:
+      platform: ${SPRING_JPA_DATABASE}
+
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI}
+
+logging:
+  level:
+    com:
+      netflix:
+        eureka: ON
+        discovery: ON
