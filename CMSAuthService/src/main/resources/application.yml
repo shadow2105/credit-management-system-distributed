@@ -1,0 +1,45 @@
+---
+spring:
+  application:
+    name: cms-auth-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COM_ISSUER_URI}
+          # jwk-set-uri is retrieved from {issuer-uri}/.well-known/openid-configuration if not specified explicitly
+          #jwk-set-uri: http://localhost:8090/oauth2/jwks
+
+server:
+  port: ${SERVER_PORT:8070}
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+  instance:
+    hostname: cms-auth-service
+    prefer-ip-address: true
+
+logging:
+  file:
+    path: ${LOGGING_FILE_PATH}
+  level:
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+
+com:
+  public-client-uri: ${COM_PUBLIC_CLIENT_URI}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
