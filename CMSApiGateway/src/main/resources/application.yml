@@ -1,0 +1,112 @@
+---
+spring:
+  application:
+    name: cms-api-gateway
+  profiles:
+    active:
+      - ${PROFILE}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          cms:
+            provider: shd
+            client-id: 9DFD919F17AD2C97C24E543C3F954DD3
+            #client-secret: 6JyvSMHFqjKL9Pvo47irtLrKTC17yn7yLyqHh6hB3uQ=
+            #client-authentication-method: client_secret_basic
+            client-authentication-method: none
+            authorization-grant-type: authorization_code
+            #redirect-uri: {baseUrl}/login/oauth2/code/{registrationId}
+            redirect-uri: ${COM_CLIENT_URI}/login/oauth2/code/cms
+            scope: openid, profile, email
+
+        provider:
+          shd:
+            issuer-uri: ${COM_ISSUER_URI}
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    session:
+      timeout: 5m
+
+logging:
+  file:
+    path: ${LOGGING_FILE_PATH}
+
+com:
+    public-client-uri: ${COM_PUBLIC_CLIENT_URI}
+    client-uri: ${COM_CLIENT_URI}
+    issuer-uri: ${COM_ISSUER_URI}
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+  instance:
+    hostname: cms-api-gateway
+    prefer-ip-address: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    com:
+      netflix:
+        eureka: ON
+        discovery: ON
