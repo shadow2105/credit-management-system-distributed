@@ -183,6 +183,8 @@ connect.lock
 */coverage
 libpeerconnection.log
 */typings
+.editorconfig
+
 
 # Compiled output
 */dist
