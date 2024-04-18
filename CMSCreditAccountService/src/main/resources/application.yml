@@ -1,0 +1,157 @@
+---
+spring:
+  application:
+    name: cms-credit-account-service
+  profiles:
+    active:
+      - ${PROFILE}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${COM_ISSUER_URI}
+          # jwk-set-uri is retrieved from {issuer-uri}/.well-known/openid-configuration if not specified explicitly
+          #jwk-set-uri: http://localhost:8090/oauth2/jwks
+
+server:
+  port: ${SERVER_PORT:8081}
+
+logging:
+  file:
+    path: ${LOGGING_FILE_PATH}
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: true
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE}
+  instance:
+    hostname: cms-credit-account-service
+    prefer-ip-address: true
+
+---
+spring:
+  config:
+    activate:
+      on-profile: default
+  h2:
+    console:
+      path: /h2-console
+      enabled: true
+
+  datasource:
+    url: 'jdbc:h2:mem:cmsaccountdb'
+
+  jpa:
+    database: h2
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: true
+
+  sql:
+    init:
+      platform: h2
+
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  h2:
+    console:
+      enabled: false
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM}
+    database: ${SPRING_JPA_DATABASE}
+    show-sql: true
+#    properties:
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: cms_accountdb_create.sql
+
+  sql:
+    init:
+      platform: ${SPRING_JPA_DATABASE}
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+    com:
+      netflix:
+        eureka: OFF
+        discovery: OFF
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - 'info'
+          - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  h2:
+    console:
+      enabled: false
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    database-platform: ${SPRING_JPA_DATABASE_PLATFORM}
+    database: ${SPRING_JPA_DATABASE}
+    show-sql: false
+
+  sql:
+    init:
+      platform: ${SPRING_JPA_DATABASE}
+
+logging:
+  level:
+    com:
+      netflix:
+        eureka: ON
+        discovery: ON
+
