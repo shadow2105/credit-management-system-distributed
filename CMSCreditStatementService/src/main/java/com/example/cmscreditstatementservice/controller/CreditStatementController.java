@@ -1,5 +1,6 @@
 package com.example.cmscreditstatementservice.controller;
 
+import com.example.cmscreditstatementservice.controller.exception.BadRequestException;
 import com.example.cmscreditstatementservice.controller.exception.ResourceNotFoundException;
 import com.example.cmscreditstatementservice.controller.exception.UnexpectedException;
 import com.example.cmscreditstatementservice.domain.CreditStatementDocument;
@@ -9,7 +10,6 @@ import com.example.cmscreditstatementservice.dto.SelectedCreditAccountCreditStat
 import com.example.cmscreditstatementservice.service.CreditStatementAccessValidator;
 import com.example.cmscreditstatementservice.service.CreditStatementService;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -212,7 +212,7 @@ public class CreditStatementController {
             retrievedCreditStatementDocument = creditStatementService
                     .getRequestedCreditStatementByCustomerId(customerId, creditStatementRequestDto);
         } catch (Exception e) {
-            //System.out.println(e.getMessage());
+            System.out.println(e.getMessage());
             throw new UnexpectedException("Unable to fetch Credit Statement. Please try again later.");
         }
 
