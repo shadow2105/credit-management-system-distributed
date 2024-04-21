@@ -1,0 +1,116 @@
+---
+services:
+  service-registry:
+    build: ./CMSEurekaServer
+    restart: always
+    ports:
+      - 8761:8761
+    networks:
+      - cms-net
+    environment:
+      - SERVER_PORT=8761
+      - LOGGING_FILE_PATH=var/log/tomcat
+      - EUREKA_ENVIRONMENT=dev 
+    volumes:
+      - ./CMSEurekaServer/.m2:/root/.m2
+
+  api-gateway:
+    build: ./CMSApiGateway
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - cms-net
+    environment:
+      - PROFILE=default
+      - SERVER_PORT=8080
+      - LOGGING_FILE_PATH=var/log/tomcat
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://service-registry:8761/eureka/
+      - COM_PUBLIC_CLIENT_URI=http://host.docker.internal:4200
+      - COM_CLIENT_URI=http://api-gateway:8080
+      - COM_ISSUER_URI=http://shdauthorizationserver-app-1:8090
+    depends_on:
+      - service-registry
+    volumes:
+      - ./CMSApiGateway/.m2:/root/.m2
+
+  credit-account-service:
+    build: ./CMSCreditAccountService
+    restart: always
+    ports:
+      - 8081:8081
+    networks:
+      - cms-net
+    environment:
+      - PROFILE=dev
+      - SERVER_PORT=8081
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://service-registry:8761/eureka/
+      - LOGGING_FILE_PATH=var/log/tomcat
+      - COM_ISSUER_URI=http://shdauthorizationserver-app-1:8090
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/cms_account_dev
+      - SPRING_DATASOURCE_USERNAME=******
+      - SPRING_DATASOURCE_PASSWORD=******
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
+      - SPRING_JPA_DATABASE=mysql
+    depends_on:
+      - service-registry
+    volumes:
+      - ./CMSCreditAccountService/.m2:/root/.m2
+
+  transaction-service:
+    build: ./CMSTransactionService
+    restart: always
+    ports:
+      - 8083:8083
+    networks:
+      - cms-net
+    environment:
+      - PROFILE=dev
+      - SERVER_PORT=8083
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://service-registry:8761/eureka/
+      - LOGGING_FILE_PATH=var/log/tomcat
+      - COM_ISSUER_URI=http://shdauthorizationserver-app-1:8090
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/cms_transaction_dev
+      - SPRING_DATASOURCE_USERNAME=******
+      - SPRING_DATASOURCE_PASSWORD=******
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
+      - SPRING_JPA_DATABASE=mysql
+    depends_on:
+      - service-registry
+    volumes:
+      - ./CMSTransactionService/.m2:/root/.m2
+
+  credit-statement-service:
+    build: ./CMSCreditStatementService
+    restart: always
+    ports:
+      - 8082:8082
+    networks:
+      - cms-net
+    environment:
+      - PROFILE=dev
+      - SERVER_PORT=8082
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=http://service-registry:8761/eureka/
+      - LOGGING_FILE_PATH=var/log/tomcat
+      - COM_ISSUER_URI=http://shdauthorizationserver-app-1:8090
+      - KAFKA_CONSUMER_BOOTSTRAP_SERVERS=shdkafkacluster-kafka-broker1-1:9094,shdkafkacluster-kafka-broker2-1:9095
+      - KAFKA_CONSUMER_GROUP_ID=cms-statement-account-spring-consumer
+      - COM_KAFKA_CONSUMER_TOPIC=cms-credit-account-service.cms_account_dev.credit_accounts
+      - SPRING_DATASOURCE_URL=jdbc:mysql://host.docker.internal:3306/cms_statement_dev
+      - SPRING_DATASOURCE_USERNAME=******
+      - SPRING_DATASOURCE_PASSWORD=******
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=validate
+      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.MySQLDialect
+      - SPRING_JPA_DATABASE=mysql
+      - SPRING_DATA_MONGODB_URI=mongodb://host.docker.internal:27017/cms_statement_dev
+    depends_on:
+      - service-registry
+    volumes:
+      - ./CMSCreditStatementService/.m2:/root/.m2
+
+
+networks:
+  cms-net:
+    external: true
