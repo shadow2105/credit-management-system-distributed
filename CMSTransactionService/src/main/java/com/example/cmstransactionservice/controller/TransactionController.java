@@ -1,5 +1,6 @@
 package com.example.cmstransactionservice.controller;
 
+import com.example.cmstransactionservice.controller.exception.BadRequestException;
 import com.example.cmstransactionservice.controller.exception.ResourceCreationFailedException;
 import com.example.cmstransactionservice.controller.exception.UnexpectedException;
 import com.example.cmstransactionservice.domain.Transaction;
@@ -9,8 +10,6 @@ import com.example.cmstransactionservice.dto.TransactionRequestDto;
 import com.example.cmstransactionservice.service.TransactionAccessValidator;
 import com.example.cmstransactionservice.service.TransactionService;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +19,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/api/v1/customer")

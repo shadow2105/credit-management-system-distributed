@@ -1,5 +1,6 @@
 package com.example.cmscreditaccountservice.controller;
 
+import com.example.cmscreditaccountservice.controller.exception.BadRequestException;
 import com.example.cmscreditaccountservice.controller.exception.ResourceCreationFailedException;
 import com.example.cmscreditaccountservice.controller.exception.ResourceNotFoundException;
 import com.example.cmscreditaccountservice.controller.exception.UnexpectedException;
@@ -10,7 +11,6 @@ import com.example.cmscreditaccountservice.dto.SelectedCreditAccountResponseDto;
 import com.example.cmscreditaccountservice.service.CreditAccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import org.apache.coyote.BadRequestException;
 import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
