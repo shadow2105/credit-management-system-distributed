@@ -1,6 +1,5 @@
 package com.example.cmscreditstatementservice.controller;
 
-import com.example.cmscreditstatementservice.controller.exception.BadRequestException;
 import com.example.cmscreditstatementservice.controller.exception.ResourceNotFoundException;
 import com.example.cmscreditstatementservice.controller.exception.UnexpectedException;
 import com.example.cmscreditstatementservice.domain.CreditStatementDocument;
@@ -9,12 +8,13 @@ import com.example.cmscreditstatementservice.dto.CreditStatementRequestDto;
 import com.example.cmscreditstatementservice.dto.SelectedCreditAccountCreditStatementsResponseDto;
 import com.example.cmscreditstatementservice.service.CreditStatementAccessValidator;
 import com.example.cmscreditstatementservice.service.CreditStatementService;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -24,10 +24,22 @@ import java.util.Map;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 
 @RestController
+@Validated
 @RequestMapping("/api/v1/customer")
 public class CreditStatementController {
 
     private static final String DEFAULT_PAGE_SIZE = "5";
+
+    // Regular expression for month (01-12)
+    private static final String MONTH_PATTERN = "^(0?[1-9]|1[0-2])$";
+
+    // Regular expression for year (starting from 1970 to 9999)
+    // might cause unnecessary calls to the database
+    //private static final String YEAR_PATTERN = "^(19[7-9]\\d|[2-9]\\d{3})$";
+
+    // Regular expression for year (starting from 1970 to 2099)
+    private static final String YEAR_PATTERN = "^(19[7-9]\\d|20\\d{2})$";
+
     private final CreditStatementService creditStatementService;
     private final CreditStatementAccessValidator creditStatementAccessValidator;
 
@@ -189,28 +201,23 @@ public class CreditStatementController {
     }
      */
 
+    // https://www.baeldung.com/cs/http-get-with-body
     // - GET - /api/v1/customer/{customer-id}/credit-statements/generate ( submit form to generate/fetch credit statement )
     @GetMapping(value = "/{customer-id}/credit-statements/generate", produces = {"application/json"})
     @PreAuthorize("hasAuthority('APP_CMS') and hasAuthority('ROLE_CUSTOMER') and #customerId == authentication.name")
     public ResponseEntity<Map<String, Object>> getRequestedCreditStatementForCustomer(
             @PathVariable("customer-id") String customerId,
-            @Valid @RequestBody CreditStatementRequestDto creditStatementRequestDto,
-            BindingResult bindingResult) throws BadRequestException {
-
-        if (bindingResult.hasErrors()) {
-            bindingResult.getFieldErrors()
-                    .stream()
-                    //.map(DefaultMessageSourceResolvable::getDefaultMessage)
-                    .forEach(error -> System.out.println(error.getDefaultMessage()));
-            //.collect(Collectors.toList());
-            throw new BadRequestException("Invalid Input! Unable to fetch the credit statement.");
-        }
+            @RequestParam(required = true) @NotBlank(message = "Credit Account ID is required") String creditAccountId,
+            @RequestParam(required = true) @Pattern(regexp = MONTH_PATTERN, message = "Invalid month") String month,
+            @RequestParam(required = true) @Pattern(regexp = YEAR_PATTERN, message = "Invalid year") String year
+            ) {
 
         CreditStatementDocument retrievedCreditStatementDocument;
         try {
             // this fetches statement from MongoDB
             retrievedCreditStatementDocument = creditStatementService
-                    .getRequestedCreditStatementByCustomerId(customerId, creditStatementRequestDto);
+                    .getRequestedCreditStatementByCustomerId(customerId,
+                            new CreditStatementRequestDto(creditAccountId, month, year));
         } catch (Exception e) {
             System.out.println(e.getMessage());
             throw new UnexpectedException("Unable to fetch Credit Statement. Please try again later.");
