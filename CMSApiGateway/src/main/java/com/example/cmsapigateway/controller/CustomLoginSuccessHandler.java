@@ -19,7 +19,7 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException
     {
-        //System.out.println("\nHandling Custom Authentication Success");
+        System.out.println("Handling Custom Authentication Success");
         response.sendRedirect(clientUri + "/auth/verify");
     }
 }
