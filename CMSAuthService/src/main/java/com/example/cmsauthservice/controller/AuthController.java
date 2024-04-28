@@ -24,17 +24,18 @@ public class AuthController {
         this.authService = authService;
     }
 
-    /*@RequestMapping("/")
+    @RequestMapping("/")
     public ResponseEntity<String> index() {
-        return ResponseEntity.ok("Auth Service is running");
-    }*/
+        return ResponseEntity.ok("Auth Service is Running!");
+    }
 
     @RequestMapping("/verify")
     public ResponseEntity<Map<String, Object>> verifyAppAuthorization(HttpServletResponse response)
             throws IOException
     {
-        // System.out.println("\n>>>>>>>>> I was called!");
+        System.out.println("Verifying Client Application Authorization!");
 
+        // Not implemented; Requires back-channel logout support from Authorization Server
         if (!authService.hasAppAuthorization()) {
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("error", "Forbidden");
@@ -61,7 +62,6 @@ public class AuthController {
         response.sendRedirect(publicClientUri);
         return null;
     }
-
 }
 
 

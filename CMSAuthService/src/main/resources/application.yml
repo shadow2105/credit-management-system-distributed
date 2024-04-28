@@ -2,6 +2,9 @@
 spring:
   application:
     name: cms-auth-service
+  profiles:
+    active:
+      - ${PROFILE}
   security:
     oauth2:
       resourceserver:
@@ -13,6 +16,13 @@ spring:
 server:
   port: ${SERVER_PORT:8070}
 
+logging:
+  file:
+    path: ${LOGGING_FILE_PATH}
+
+com:
+  public-client-uri: ${COM_PUBLIC_CLIENT_URI}
+
 eureka:
   client:
     fetch-registry: false
@@ -23,18 +33,21 @@ eureka:
     hostname: cms-auth-service
     prefer-ip-address: true
 
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
 logging:
-  file:
-    path: ${LOGGING_FILE_PATH}
   level:
+    org:
+      springframework:
+        security: DEBUG
     com:
       netflix:
         eureka: OFF
         discovery: OFF
-
-
-com:
-  public-client-uri: ${COM_PUBLIC_CLIENT_URI}
 
 management:
   endpoints:
@@ -43,3 +56,16 @@ management:
         include:
           - 'info'
           - 'health'
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    com:
+      netflix:
+        eureka: ON
+        discovery: ON

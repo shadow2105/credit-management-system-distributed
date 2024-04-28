@@ -17,6 +17,5 @@ public class AuthService {
         return authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .anyMatch((authority) -> authority.equals("APP_CMS"));
-
     }
 }
