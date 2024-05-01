@@ -1,5 +1,7 @@
 package com.example.cmsapigateway.configuration;
 
+import com.example.cmsapigateway.configuration.csrf.CsrfCookieFilter;
+import com.example.cmsapigateway.configuration.csrf.SpaCsrfTokenRequestHandler;
 import com.example.cmsapigateway.controller.CustomLoginSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,6 +17,8 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2Authorization
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestCustomizers;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -69,14 +73,25 @@ public class SecurityConfiguration {
 
     @Bean
     // Web Application (This application works as an API Gateway and serves as a Backend of the Client - BFF Pattern)
-    @Profile({"dev", "prod"})
-    public SecurityFilterChain oauth2SecurityFilterChain(HttpSecurity http,
+    @Profile("dev")
+    public SecurityFilterChain oauth2SecurityFilterChainDev(HttpSecurity http,
                                                          ClientRegistrationRepository repo) throws Exception {
 
         String baseUri = OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
         DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, baseUri);
 
         resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
+
+
+        CookieCsrfTokenRepository cookieCsrftokenRepository = new CookieCsrfTokenRepository();
+        cookieCsrftokenRepository.setCookieCustomizer((responseCookieBuilder) -> responseCookieBuilder
+                        // Secure attribute is required with SameSite=None
+                        .secure(true)
+                        .sameSite("None")
+                        // HTTP-only cookies mitigate XSS risks by preventing JavaScript in the browser from accessing
+                        // the cookie's content, thus reducing the chance of sensitive information exposure or manipulation.
+                        .httpOnly(false)
+                        .build());
 
         http.authorizeHttpRequests(request -> request
                         .requestMatchers( "/resources/**", "/actuator/**", "/authn/**")
@@ -105,8 +120,60 @@ public class SecurityConfiguration {
                         .oidcLogout((logout) -> logout
                                         .backChannel(Customizer.withDefaults())
                         )
-                        //.csrf((AbstractHttpConfigurer::disable))
+                        // https://docs.spring.io/spring-security/reference/servlet/exploits/csrf.html#csrf-integration-javascript-spa
+                        .csrf((csrf) -> csrf
+                                .csrfTokenRepository(cookieCsrftokenRepository)
+                                .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                        )
+                        .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                         .cors(Customizer.withDefaults());   // Enable CORS
+
+        return http.build();
+    }
+
+    @Bean
+    // Web Application (This application works as an API Gateway and serves as a Backend of the Client - BFF Pattern)
+    @Profile("prod")
+    public SecurityFilterChain oauth2SecurityFilterChainProd(HttpSecurity http,
+                                                         ClientRegistrationRepository repo) throws Exception {
+
+        String baseUri = OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI;
+        DefaultOAuth2AuthorizationRequestResolver resolver = new DefaultOAuth2AuthorizationRequestResolver(repo, baseUri);
+
+        resolver.setAuthorizationRequestCustomizer(OAuth2AuthorizationRequestCustomizers.withPkce());
+
+
+        CookieCsrfTokenRepository cookieCsrftokenRepository = new CookieCsrfTokenRepository();
+        cookieCsrftokenRepository.setCookieCustomizer((responseCookieBuilder) -> responseCookieBuilder
+                .secure(true)
+                .sameSite("Strict")
+                .httpOnly(true)
+                // set-cookie for subdomains only - like frontend of client application (app.cms.com)
+                .domain(".cms.com")
+                .build());
+
+        http.authorizeHttpRequests(request -> request
+                        .requestMatchers( "/resources/**", "/authn/**")
+                        .permitAll()
+                        .anyRequest().authenticated())
+                        .oauth2Login((login) -> login
+                                    .authorizationEndpoint(authorizationEndpointConfig -> authorizationEndpointConfig
+                                            .authorizationRequestResolver(resolver)
+                        )
+                                    .successHandler(customLoginSuccessHandler)
+                )
+                .logout((logout) -> logout
+                                    .logoutSuccessHandler(oidcLogoutSuccessHandler())
+                )
+                .oidcLogout((logout) -> logout
+                        .backChannel(Customizer.withDefaults())
+                )
+                .csrf((csrf) -> csrf
+                        .csrfTokenRepository(cookieCsrftokenRepository)
+                        .csrfTokenRequestHandler(new SpaCsrfTokenRequestHandler())
+                )
+                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
+                .cors(Customizer.withDefaults());
 
         return http.build();
     }
