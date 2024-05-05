@@ -26,6 +26,8 @@ com:
 
 server:
   port: ${SERVER_PORT:8082}
+  ssl:
+    enabled: false
 
 logging:
   file:
