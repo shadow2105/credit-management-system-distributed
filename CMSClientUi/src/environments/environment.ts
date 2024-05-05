@@ -4,5 +4,5 @@
 
 export const environment = {
     production: false,
-    clientUri: 'http://127.0.0.1:8080',
+    clientUri: 'https://creditmanagementsystem-api-gateway-1:8080',
 };
