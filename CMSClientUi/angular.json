@@ -77,8 +77,11 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "host": "127.0.0.1",
-            "port": 4200
+            "host": "creditmanagementsystem-client-ui-1",
+            "port": 4200,
+            "ssl": true,
+            "sslCert": "ssl/cms-client.crt", 
+            "sslKey": "ssl/cms-client-ue.key"
           }
         },
         "extract-i18n": {
