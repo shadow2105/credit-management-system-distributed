@@ -11,7 +11,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(): void {
-    const url = `${env.clientUri}/oauth2/authorization/shd`;
+    const url = `${env.clientUri}/oauth2/authorization/cms`;
     window.location.href = url;
   }
 
