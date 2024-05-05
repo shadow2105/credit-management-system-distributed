@@ -90,7 +90,7 @@ public class SecurityConfiguration {
                         .sameSite("None")
                         // HTTP-only cookies mitigate XSS risks by preventing JavaScript in the browser from accessing
                         // the cookie's content, thus reducing the chance of sensitive information exposure or manipulation.
-                        .httpOnly(false)
+                        .httpOnly(true)
                         .build());
 
         http.authorizeHttpRequests(request -> request

@@ -80,6 +80,22 @@ spring:
     activate:
       on-profile: dev
 
+server:
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:keystore/cms.p12
+    key-store-password: ${SSL_KEYSTORE_PASSWORD}
+    key-alias: cms
+    # https://stackoverflow.com/questions/67949546/android-studio-building-signed-apk-get-key-failed
+    key-password: ${SSL_CMS_KEY_PASSWORD}
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: true
+        http-only: true
+
 logging:
   level:
     org:
@@ -103,6 +119,22 @@ spring:
   config:
     activate:
       on-profile: prod
+
+server:
+  ssl:
+    enabled: true
+    key-store-type: PKCS12
+    key-store: classpath:keystore/cms.p12
+    key-store-password: ${SSL_KEYSTORE_PASSWORD}
+    key-alias: cms
+    key-password: ${SSL_CMS_KEY_PASSWORD}
+  servlet:
+    session:
+      cookie:
+        same-site: strict
+        secure: true
+        http-only: true
+        domain: .cms.com
 
 logging:
   level:
