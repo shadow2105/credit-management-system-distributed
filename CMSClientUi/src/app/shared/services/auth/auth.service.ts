@@ -48,6 +48,7 @@ export class AuthService {
   userActivity() {
     // Reset timer on user activity - see this.initSession(), authInterceptor, UserActivityDirective
     this.lastActivityTime = new Date().getTime(); 
+    //console.log("Resetting Timer.");
   }
 
   // https://stackoverflow.com/questions/27406994/http-requests-withcredentials-what-is-this-and-why-using-it

@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../environments/environment';
 import { AuthService } from './shared/services/auth/auth.service';
+import { UserActivityDirective } from './userActivity/user-activity.directive';
 
 @Component({
   selector: 'app-root',
@@ -25,8 +26,8 @@ import { AuthService } from './shared/services/auth/auth.service';
     MatToolbarModule,
     MatMenuModule,
     MatDividerModule,
-    CommonModule
-
+    CommonModule,
+    UserActivityDirective
   ],
 })
 export class AppComponent implements OnInit {

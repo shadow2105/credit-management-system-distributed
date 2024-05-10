@@ -1,4 +1,4 @@
-import { Directive, HostListener } from '@angular/core';
+import { Directive, HostListener, Input } from '@angular/core';
 import { AuthService } from '../shared/services/auth/auth.service';
 
 @Directive({
@@ -7,14 +7,19 @@ import { AuthService } from '../shared/services/auth/auth.service';
 })
 export class UserActivityDirective {
 
+  @Input() isActive = false;
+
   constructor(private authService: AuthService) { }
 
   @HostListener('click', ['$event'])
   @HostListener('keydown', ['$event'])
   @HostListener('mousemove', ['$event'])
   onUserActivity(event: Event) {
-    // Reset timer on user activity
-    this.authService.userActivity();           
+    //console.log("User Activity Detected!")
+    // Reset timer on user activity if user is authenticated
+    if (this.isActive) {
+      this.authService.userActivity();  
+    }         
   }
 
 }

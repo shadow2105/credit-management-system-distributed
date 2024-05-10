@@ -1,84 +1,86 @@
-<mat-toolbar color="primary">
-  <span>
-    <!-- button mat-mini-fab (click)="sidenav?.toggle()">
-      <mat-icon>menu</mat-icon>
-    </button -->
-    <span class="logo">
-      <a routerLink="/home">
-      <img src="assets/logo.png" alt="Logo" />
-      </a>
+<div appUserActivity [isActive]="isAuthenticated">
+  <mat-toolbar color="primary">
+    <span>
+      <!-- button mat-mini-fab (click)="sidenav?.toggle()">
+        <mat-icon>menu</mat-icon>
+      </button -->
+      <span class="logo">
+        <a routerLink="/home">
+        <img src="assets/logo.png" alt="Logo" />
+        </a>
+      </span>
+      <span class="nav-links">
+        <a mat-button routerLink="/home" routerLinkActive="active-link">
+          <mat-icon>home</mat-icon>
+          Home
+        </a>
+        <a mat-button routerLink="/about" routerLinkActive="active-link">
+          <mat-icon>info</mat-icon>
+          About
+        </a>
+        <button mat-button [matMenuTriggerFor]="productsMenu">
+            <mat-icon>local_offer</mat-icon>
+            Products
+        </button>
+        <button mat-button [matMenuTriggerFor]="learnMenu">
+            <mat-icon>library_books</mat-icon>
+            Learn
+        </button>
+        <button mat-button routerLink="/dashboard" *ngIf="isAuthenticated" routerLinkActive="active-link">
+          <mat-icon>dashboard</mat-icon>
+          Dashboard
+        </button>
+      </span>
     </span>
-    <span class="nav-links">
-      <a mat-button routerLink="/home" routerLinkActive="active-link">
-        <mat-icon>home</mat-icon>
-        Home
-      </a>
-      <a mat-button routerLink="/about" routerLinkActive="active-link">
-        <mat-icon>info</mat-icon>
-        About
-      </a>
-      <button mat-button [matMenuTriggerFor]="productsMenu">
-          <mat-icon>local_offer</mat-icon>
-          Products
-      </button>
-      <button mat-button [matMenuTriggerFor]="learnMenu">
-          <mat-icon>library_books</mat-icon>
-          Learn
-      </button>
-      <button mat-button routerLink="/dashboard" *ngIf="isAuthenticated" routerLinkActive="active-link">
-        <mat-icon>dashboard</mat-icon>
-        Dashboard
-      </button>
-    </span>
-  </span>
-  <span class="spacer"></span>
-  <button mat-raised-button *ngIf="isAuthenticated; else noAuth" class="login" (click)="logout()">
-    Logout
-  </button>
-  <!-- <button mat-raised-button class="signup" (click)="getAuthStatus()">
-    Get Auth Status
-  </button> -->
-</mat-toolbar>
-
-<mat-menu #productsMenu="matMenu">
-  <a mat-menu-item>
-    <span>Product 1</span>
-  </a>
-  <button mat-menu-item>
-    <span>Product 2</span>
-  </button>
-  <button mat-menu-item>
-    <span>Product 3</span>
-  </button>
-</mat-menu>
-
-<mat-menu #learnMenu="matMenu">
-  <a mat-menu-item>
-    <span>Topic 1</span>
-  </a>
-  <button mat-menu-item>
-    <span>Topic 2</span>
-  </button>
-  <button mat-menu-item>
-    <span>Topic 3</span>
-  </button>
-</mat-menu>
-
-<ng-template #noAuth>
-  <button mat-raised-button class="login" (click)="login()">
-    Login
-  </button>
-  <button mat-raised-button class="signup" (click)="signup()">
-    Get Started
-  </button>
-</ng-template>
-
-<!-- mat-sidenav-container>
-  <mat-sidenav #sidenav mode="side" opened class="app-sidenav">
-  </mat-sidenav>
-</mat-sidenav-container -->
-
-<div class="container" appUserActivity>
-  <router-outlet></router-outlet>
-  <br />
+    <span class="spacer"></span>
+    <button mat-raised-button *ngIf="isAuthenticated; else noAuth" class="login" (click)="logout()">
+      Logout
+    </button>
+    <!-- <button mat-raised-button class="signup" (click)="getAuthStatus()">
+      Get Auth Status
+    </button> -->
+  </mat-toolbar>
+  
+  <mat-menu #productsMenu="matMenu">
+    <a mat-menu-item>
+      <span>Product 1</span>
+    </a>
+    <button mat-menu-item>
+      <span>Product 2</span>
+    </button>
+    <button mat-menu-item>
+      <span>Product 3</span>
+    </button>
+  </mat-menu>
+  
+  <mat-menu #learnMenu="matMenu">
+    <a mat-menu-item>
+      <span>Topic 1</span>
+    </a>
+    <button mat-menu-item>
+      <span>Topic 2</span>
+    </button>
+    <button mat-menu-item>
+      <span>Topic 3</span>
+    </button>
+  </mat-menu>
+  
+  <ng-template #noAuth>
+    <button mat-raised-button class="login" (click)="login()">
+      Login
+    </button>
+    <button mat-raised-button class="signup" (click)="signup()">
+      Get Started
+    </button>
+  </ng-template>
+  
+  <!-- mat-sidenav-container>
+    <mat-sidenav #sidenav mode="side" opened class="app-sidenav">
+    </mat-sidenav>
+  </mat-sidenav-container -->
+  
+  <div class="container">
+    <router-outlet></router-outlet>
+    <br />
+  </div>
 </div>
