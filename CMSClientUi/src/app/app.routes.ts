@@ -3,7 +3,7 @@ import { AboutComponent } from './about/about.component';
 import { HomeComponent } from './home/home.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { authGuard } from './shared/guards/auth.guard';
+import { authGuard } from './shared/guards/auth/auth.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },

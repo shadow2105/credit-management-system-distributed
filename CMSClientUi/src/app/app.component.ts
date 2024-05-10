@@ -31,25 +31,22 @@ import { AuthService } from './shared/services/auth/auth.service';
 })
 export class AppComponent implements OnInit {
   title: string = 'Credit Managment System';
-  isAuthenticated: boolean = false;
-  userData: any = null;
+  isAuthenticated : boolean = false;
 
   //constructor(private oidcSecurityService: OidcSecurityService) { }
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit() {
-    this.authService.checkAuth()
-      .subscribe(({ isAuthenticated, userData }) => {
+    // Initialize session and then check auth status to redirect if needed
+    this.authService.initSession().subscribe(() => {
+      this.authService.isAuthenticated().subscribe((isAuthenticated) => {
         this.isAuthenticated = isAuthenticated;
-        this.userData = userData;
-
-        // console.log("authenticated: ", isAuthenticated);
-        // console.log("userData:", userData);
-
-        if (this.isAuthenticated) {
-          this.router.navigateByUrl('dashboard');
+        if (isAuthenticated) {
+          // Redirect to the dashboard
+          this.router.navigateByUrl('dashboard'); 
         }
       });
+    });
   }
 
   login() {
