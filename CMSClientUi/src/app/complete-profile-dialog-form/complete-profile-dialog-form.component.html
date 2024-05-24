@@ -179,31 +179,3 @@
     <button mat-button mat-dialog-close (click)="redirectToHomeOnDialogClose()">Close</button>
     <button mat-button (click)="submitForm()">Submit</button>
 </mat-dialog-actions>
-
-<!--
-private final String username;     // PK, FK
-private final String givenName;
-private final String familyName;
-
-private String middleName;
-private String email;
-private boolean isProfileComplete;
-
-
-private String preferredName;      // set default name as: givenName middleName familyName
-private String picture;            // set default pfp as: specify url here
-private boolean isEmailVerified;
-private Gender gender;
-private Date birthDate;
-private ZoneInfo zoneInfo;          // make user select the zone; retrieving from user-agent can vary the time_zone
-private CustomLocale locale;        // make user select the locale (language preferences) - English or French
-private String phoneNumber;
-private boolean isPhoneVerified;
-private String address;
-
-private String SIN;                 // need to find a way to securely store this - encryption of first 6 digits? ( ******111)
-
-private String occupation;          // Can be an ENUM of common occupations
-
-
--->
