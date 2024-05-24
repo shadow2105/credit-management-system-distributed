@@ -6,7 +6,7 @@ import { catchError, map } from 'rxjs';
 export const authGuard: CanActivateFn = (route, state) => {
 
   const authService = inject(AuthService);
-  // const router = inject(Router);
+  const router = inject(Router);
 
   return authService.isAuthenticated().pipe(
     map(isAuthenticated => {
@@ -15,8 +15,15 @@ export const authGuard: CanActivateFn = (route, state) => {
         authService.login();
         return false;
       }
-      // User is authenticated, allow access
-      return isAuthenticated; 
+
+      if (!authService.getUserInfo()['is_profile_complete']) {
+        // User is authenticated but has an incomplete customer profile, redirect to complete profile dialog
+        router.navigateByUrl('complete-profile')
+        return false;
+      }
+
+      // User is authenticated and has a complete customer profile, allow access
+      return true; 
     })
   );
 }

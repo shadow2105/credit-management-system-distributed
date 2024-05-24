@@ -1,0 +1,209 @@
+<h2 mat-dialog-title>Complete Profile</h2>
+<!-- p>{{userInfo | json}}</p -->
+<mat-dialog-content style="text-align: center;">
+    <img src="{{userInfo['picture']}}" alt="Profile Picture">
+    <h3>
+        {{userInfo['given_name']}} 
+        @if (userInfo['middle_name']) {  userInfo['middle_name'] }
+        {{userInfo['family_name']}}
+    </h3>
+    <form id="complete-profile-form" [formGroup]="completeProfileForm">
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Preferred Name</mat-label>
+                <input matInput type="text" name="preferred_name" id="preferred_name"
+                formControlName="preferredName">
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input matInput type="email" name="email" id="email"
+                formControlName="email" placeholder="Ex. pat@example.com" required>
+                @if (completeProfileForm.get('email')?.errors?.['email'] && 
+                        !completeProfileForm.get('email')?.errors?.['required']) {
+                    <mat-error>Please enter a valid email address</mat-error>
+                }
+                @if (completeProfileForm.get('email')?.errors?.['required']) {
+                <mat-error>Email is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Date of Birth</mat-label>
+                <input matInput [matDatepicker]="picker" name="dob" id="dob"
+                formControlName="dob" required>
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+                @if (completeProfileForm.get('dob')?.errors?.['required']) {
+                    <mat-error>Date of Birth is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Gender</mat-label>
+                <mat-select name="gender" id="gender"
+                formControlName="gender" required>
+                <mat-option value="Male">Male</mat-option>
+                <mat-option value="Female">Female</mat-option>
+                <mat-option value="Other">Other</mat-option>
+                </mat-select>
+                @if (completeProfileForm.get('gender')?.errors?.['required']) {
+                    <mat-error>Gender is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Time Zone</mat-label>
+                <mat-select name="zoneinfo" id="zoneinfo"
+                formControlName="timeZone" required>
+                <mat-option value="PST">Pacific Standard Time (PST) - UTC-8 hours</mat-option>
+                <mat-option value="MST">Mountain Standard Time (MST) - UTC-7 hours</mat-option>
+                <mat-option value="CST">Central Standard Time (CST) - UTC-6 hours</mat-option>
+                <mat-option value="EST">Eastern Standard Time (EST) - UTC-5 hours</mat-option>
+                <mat-option value="AST">Atlantic Standard Time (AST) - UTC-4 hours</mat-option>
+                <mat-option value="NST">Newfoundland Standard Time (NST) - UTC-3:30 hours</mat-option>
+                </mat-select>
+                @if (completeProfileForm.get('timeZone')?.errors?.['required']) {
+                    <mat-error>Time Zone is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-button-toggle-group name="locale" id="locale"
+            formControlName="locale">
+                <mat-button-toggle value="en_CA">English</mat-button-toggle>
+                <mat-button-toggle value="fr_CA">French</mat-button-toggle>
+            </mat-button-toggle-group>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Phone</mat-label>
+                <span matTextPrefix>+1 &nbsp;</span>
+                <input matInput type="tel" name="phone" id="phone"
+                formControlName="phone"
+                placeholder="5555551234" required>
+                @if (completeProfileForm.get('phone')?.errors?.['pattern'] && 
+                        !completeProfileForm.get('phone')?.errors?.['required']) {
+                    <mat-error>Please enter a valid phone number</mat-error>
+                }
+                @if (completeProfileForm.get('phone')?.errors?.['required']) {
+                <mat-error>Phone number is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <!-- mat-label>Street</mat-label -->
+            <!-- app-place-autocomplete (setAddress)="fillInAddress($event)" [address1autocomplete]="address1">
+                </app-place-autocomplete -->
+            <app-place-autocomplete (setAddress)="fillInAddress($event)"
+             [address1FormControl]="address1FormControl">
+            </app-place-autocomplete>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Apartment, unit, suite, or floor #</mat-label>
+                <input matInput type="text" name="address2" id="address2"
+                 formControlName="address2" #address2Field>
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>City</mat-label>
+                <input matInput type="text" name="locality" id="locality"
+                formControlName="locality" required>
+                @if (completeProfileForm.get('locality')?.errors?.['required']) {
+                    <mat-error>City is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>State/Province</mat-label>
+                <input matInput type="text" name="state" id="state"
+                formControlName="state" required>
+                @if (completeProfileForm.get('state')?.errors?.['required']) {
+                    <mat-error>State/Province is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Postal code</mat-label>
+                <input matInput type="text" name="postcode" id="postcode"
+                formControlName="postalCode" required>
+                @if (completeProfileForm.get('postalCode')?.errors?.['required']) {
+                    <mat-error>Postal Code is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Country/Region</mat-label>
+                <input matInput type="text" name="country" id="country"
+                formControlName="country" required>
+                @if (completeProfileForm.get('country')?.errors?.['required']) {
+                    <mat-error>Country is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>SIN</mat-label>
+                <input matInput type="text" name="sin" id="sin"
+                formControlName="sin" required>
+                @if (completeProfileForm.get('sin')?.errors?.['pattern'] && 
+                        !completeProfileForm.get('sin')?.errors?.['required']) {
+                    <mat-error>Please enter a valid SIN</mat-error>
+                }
+                @if (completeProfileForm.get('sin')?.errors?.['required']) {
+                <mat-error>SIN is <strong>required</strong></mat-error>
+                }
+            </mat-form-field>
+        </p>
+        <p>
+            <mat-form-field appearance="outline">
+                <mat-label>Occupation</mat-label>
+                <input matInput type="text" name="occupation" id="occupation"
+                formControlName="occupation">
+            </mat-form-field>
+        </p>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button (click)="clearForm()">Clear</button>
+    <button mat-button mat-dialog-close (click)="redirectToHomeOnDialogClose()">Close</button>
+    <button mat-button (click)="submitForm()">Submit</button>
+</mat-dialog-actions>
+
+<!--
+private final String username;     // PK, FK
+private final String givenName;
+private final String familyName;
+
+private String middleName;
+private String email;
+private boolean isProfileComplete;
+
+
+private String preferredName;      // set default name as: givenName middleName familyName
+private String picture;            // set default pfp as: specify url here
+private boolean isEmailVerified;
+private Gender gender;
+private Date birthDate;
+private ZoneInfo zoneInfo;          // make user select the zone; retrieving from user-agent can vary the time_zone
+private CustomLocale locale;        // make user select the locale (language preferences) - English or French
+private String phoneNumber;
+private boolean isPhoneVerified;
+private String address;
+
+private String SIN;                 // need to find a way to securely store this - encryption of first 6 digits? ( ******111)
+
+private String occupation;          // Can be an ENUM of common occupations
+
+
+-->
