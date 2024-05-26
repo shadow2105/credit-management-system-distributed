@@ -2,7 +2,7 @@ import { AfterViewChecked, AfterViewInit, Component, OnInit } from '@angular/cor
 import { NavigationStart, Router, RouterModule, RouterOutlet } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatDividerModule } from '@angular/material/divider';
@@ -11,6 +11,7 @@ import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { environment } from '../environments/environment';
 import { AuthService } from './shared/services/auth/auth.service';
 import { UserActivityDirective } from './userActivity/user-activity.directive';
+import { SidenavComponent } from './sidenav/sidenav.component';
 
 @Component({
   selector: 'app-root',
@@ -27,12 +28,15 @@ import { UserActivityDirective } from './userActivity/user-activity.directive';
     MatMenuModule,
     MatDividerModule,
     CommonModule,
-    UserActivityDirective
+    UserActivityDirective,
+    SidenavComponent
   ],
 })
 export class AppComponent implements OnInit {
   title: string = 'Credit Managment System';
-  isAuthenticated : boolean = false;
+  isAuthenticated: boolean = false;
+  userInfo: any = null;
+  
 
   //constructor(private oidcSecurityService: OidcSecurityService) { }
   constructor(private authService: AuthService, private router: Router) { }
@@ -43,6 +47,8 @@ export class AppComponent implements OnInit {
       this.authService.isAuthenticated().subscribe((isAuthenticated) => {
         this.isAuthenticated = isAuthenticated;
         if (isAuthenticated) {
+          // Get user info for ui
+          this.userInfo = this.authService.getUserInfo();
           // Redirect to the dashboard
           this.router.navigateByUrl('dashboard'); 
         }

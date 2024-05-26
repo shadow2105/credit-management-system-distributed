@@ -8,8 +8,11 @@ mat-toolbar {
     width: 100%;
     min-height: 75px;
   
-    .mat-mini-fab {
-      margin-right: 10px;
+    .mat-mdc-mini-fab {
+      margin-right: 4px;
+      vertical-align: middle;
+      background-color: #6495ed;
+      color: #f5f5f5;
     }
   
     .spacer {
@@ -61,6 +64,14 @@ mat-toolbar {
     }
 }
 
-.container {
-    margin-top: 75px;
+.sidenav {
+  width: 280px;
+  padding: 20px;
+  position: fixed;
+  text-align: start;
+}
+
+.main {
+  margin-top: 75px;
+  min-height: calc(100vh - 75px);
 }

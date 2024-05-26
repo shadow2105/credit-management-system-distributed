@@ -1,0 +1,48 @@
+.user-info {
+  text-align: center;
+  font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  word-wrap: break-word;
+
+  img {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+  }
+
+  p #preferred-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0;
+    padding-bottom: 0;
+  }
+
+  p #email {
+    font-size: 0.95rem;
+    font-style: italic;
+    color: #808080;
+    margin-top: 0; 
+    padding-top: 0;
+  }
+}
+
+.links {
+  
+  .mat-mdc-button {
+    font-size: 0.95rem;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: #6495ed;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  mat-icon {
+    vertical-align: middle;
+  }
+
+  .active-link {
+    background-color: #d3d3d3 !important;
+  }
+}
